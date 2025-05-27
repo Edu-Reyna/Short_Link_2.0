@@ -23,9 +23,11 @@ jobs:
             --health-timeout=5s
             --health-retries=3
           env:
-            MYSQL_ROOT_PASSWORD: "password"
-            MYSQL_DATABASE: "short_url"
-            MYSQL_PASSWORD: "password"
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: short_url
+            MYSQL_USER: sabado
+            MYSQL_PASSWORD: password
+
       env:
         SPRING_PROFILES_ACTIVE: "test"
         DB_HOST: "localhost"
