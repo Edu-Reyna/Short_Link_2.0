@@ -1,0 +1,65 @@
+
+services:
+
+#  acortador:
+#    build: .
+#    container_name: acortador
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#      SPRING_SECURITY_OUTH2_CLIENT-ID: ${SPRING_SECURITY_OUTH2_CLIENT-ID}
+#      SPRING_SECURITY_OUTH2_CLIENT-SECRET: ${SPRING_SECURITY_OUTH2_CLIENT-SECRET}
+#      SECURITY_JWT_KEY_PRIVATE: ${SECURITY_JWT_KEY_PRIVATE}
+#      SECURITY_JWT_USER_GENERATOR: ${SECURITY_JWT_USER_GENERATOR}
+#    depends_on:
+#      - mysql
+#      - redis
+#    networks:
+#        - my-network
+
+  redis:
+    image: redis:7.4.3
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--save", "''", "--appendonly", "no" ]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+        - my-network
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: short_url
+      MYSQL_USER: sabado
+      MYSQL_PASSWORD: password
+    ports:
+        - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -ppassword"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+        - my-network
+
+volumes:
+  redis_data:
+  mysql_data:
+
+networks:
+    my-network:
+        driver: bridge

@@ -1,0 +1,49 @@
+
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      services:
+        database:
+          image: mysql:latest
+          ports:
+            - 3306:3306
+          options: >-
+            --health-cmd="mysqladmin ping -h localhost"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=3
+          env:
+            MYSQL_ROOT_PASSWORD: "password"
+            MYSQL_DATABASE: "short_url"
+            MYSQL_PASSWORD: "password"
+      env:
+        SPRING_PROFILES_ACTIVE: "test"
+        DB_HOST: "localhost"
+        DB_PORT: "3306"
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up JDK 21
+          uses: actions/setup-java@v3
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+
+        - name: Build with Maven
+          run: mvn clean install
+
+        - name: Run tests
+          run: mvn test
+

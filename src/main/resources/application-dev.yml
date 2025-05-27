@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: acortador
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 6000
+  cache:
+    type: redis
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OUTH2_CLIENT-ID}
+            client-secret: ${SPRING_SECURITY_OUTH2_CLIENT-SECRET}
+            scope:
+              - profile
+              - email
+  docker:
+    compose:
+      file: acortador/compose.yaml
+
+security:
+  jwt:
+    key:
+      private: ${SECURITY_JWT_KEY_PRIVATE}
+    user:
+      generator: ${SECURITY_JWT_USER_GENERATOR}
